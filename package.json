@@ -1,0 +1,23 @@
+{
+  "name": "nertz",
+  "version": "1.0.0",
+  "description": "A card game for funzies",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TylerMcKenzie/Nertz.git"
+  },
+  "author": "Tyler Mckenzie",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TylerMcKenzie/Nertz/issues"
+  },
+  "homepage": "https://github.com/TylerMcKenzie/Nertz#readme",
+  "devDependencies": {
+    "webpack": "^1.14.0"
+  }
+}
