@@ -8,10 +8,12 @@ const port = Number(process.env.port || 3000);
 const server = http.createServer((req, res) => {
   // serve up just index page as React will handle routing **maybe**
 
+  // determine file path
   var filePath = '.' + req.url;
   if (filePath == './')
     filePath = './index.html'
 
+  // serve up content in correct context
   var contentType = 'text/html';
   var extName = path.extname(filePath);
   
@@ -36,6 +38,7 @@ const server = http.createServer((req, res) => {
       break;
   }
 
+  // serve assets on request
   fs.readFile(filePath, (err, content) => {
     if (err)
       console.log(err);
