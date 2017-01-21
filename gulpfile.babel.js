@@ -3,7 +3,6 @@
 import gulp from 'gulp';
 import babel from 'gulp-babel';
 import sass from 'gulp-sass';
-import browser from 'browser-sync';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import webpackConfig from './webpack.config.js';
@@ -13,37 +12,40 @@ const dirs = {
   dest: 'dist'
 }
 
+const PORT = 3001;
+const HOSTNAME = 'localhost';
 
-gulp.task('default', ['webpack-dev-server']);
+gulp.task('default', ['build-dev']);
 
 gulp.task('build-dev', ['webpack:build-dev'], () => {
-  gulp.watch(`${dirs.src}/**/*`, ['webpack:build-dev']);
+  gulp.watch([`${dirs.src}/**/*`], ['webpack:build-dev']);
 });
 
 var myDevConfig = Object.create(webpackConfig);
 myDevConfig.devtool = "sourcemap";
-myDevConfig.debug = "true";
+myDevConfig.debug = true;
 
 var devCompiler = webpack(myDevConfig);
 
-gulp.task('webpack:build-dev', (cb) => {
+gulp.task('webpack:build-dev', (done) => {
   devCompiler.run((err, stats) => {
     if(err) 
       console.log(err);
-    cb();
-  })
+    done();
+  });
 });
 
-gulp.task('webpack-dev-server', () => {
+gulp.task('dev-server', ['build-dev'], () => {
   var serveConfig = Object.create(webpackConfig);
   serveConfig.devtool = 'eval';
   serveConfig.debug = true;
+  serveConfig.entry.app.unshift("webpack-dev-server/client?http://"+HOSTNAME+":"+PORT+"/", "webpack/hot/dev-server");
 
   new WebpackDevServer(webpack(serveConfig), {
-      publicPath: '/', serveConfig.output.publicPath,
-      stats: {
-        colors: true
-      }
+    hot: true,
+    publicPath: '/' + serveConfig.output.publicPath,
+    stats: {
+      colors: true
     }
   })
   .listen(PORT, HOSTNAME, (err) => {
