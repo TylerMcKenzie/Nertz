@@ -1,8 +1,3 @@
-import './Folder/some';
-import './Folder/more';
+import './index/some';
+import './index/more';
 
-class Def {
-  constuctor() {
-    this.name = 'Dof';
-  }
-}

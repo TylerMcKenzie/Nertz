@@ -1,47 +1,50 @@
 'use strict';
 
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
-const webpack = require('webpack');
-const WebpackDevServer = require('webpack-dev-server');
-const webpackConfig = require('./webpack.config.js');
-
+const env = require('yargs').argv.env;
+const { resolve } = require('path');
 const express = require('express');
-const proxy = require('proxy-middleware');
-const url = require('url');
+const webpack = require('webpack');
+const webpackMiddleware = require('webpack-dev-middleware');
+const webpackHotMiddleware = require('webpack-hot-middleware');
+const webpackConfig = require('./webpack.config.babel.js')(env);
+
+const isDev = env !== 'prod';
 
 const HOSTNAME = 'localhost';
-const APPPORT = Number(process.env.PORT || 3000);
-const PROXYPORT = 3001;
+const PORT = isDev ? 3000 : 3000;
 
-// Run dev server for hot reload of assets
-var serveConfig = Object.create(webpackConfig);
-serveConfig.devtool = 'eval';
-serveConfig.debug = true;
-// serveConfig.entry.app.unshift("webpack-dev-server/client?http://"+HOSTNAME+":"+PROXYPORT+"/", "webpack/hot/dev-server");
 
-var server = new WebpackDevServer(webpack(serveConfig), {
-  hot: true,
-  publicPath: '/dist',
-  stats: {
-    colors: true
-  }
-});
-
-// Start app
+// Start server logic
 var app = express();
 
-// serve dist
-app.use('/dist', proxy(url.parse('http://' + HOSTNAME + ':'+ PROXYPORT + '/dist')));
+if (isDev) {
+  
+  const compiler = webpack(webpackConfig);
+  const compilerOptions = {
+    publicPath: webpackConfig.output.publicPath,
+    stats: { 
+      colors: true
+    }
+  };
 
-app.get('/*', (req, res) => {
-  res.sendFile(`${__dirname}/index.html`);
-});
 
-// run servers
-server.listen(PROXYPORT, HOSTNAME, ()=> {});
-app.listen(APPPORT);
+  app.use(webpackMiddleware(compiler, compilerOptions));
+  app.use(webpackHotMiddleware(compiler));
+
+  app.get('/*', (err, res, req) => {
+    res.sendFile(__dirname + '/index.html');
+  })
+
+} else {
+
+  app.use(express.static(__dirname));
+  app.get('/*', (err ,res, req) => {
+    res.sendFile(__dirname + '/index.html');
+  })
+
+}
+
+app.listen(PORT);
 
 // const server = http.createServer((req, res) => {
 //   // serve up just index page as React will handle routing **maybe**

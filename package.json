@@ -5,7 +5,12 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "npm run build && node server --env=prod",
+    "prebuild": "rimraf dist",
+    "build": "webpack --env.prod ",
+    "prebuild:dev": "rimraf dist",
+    "build:dev": "webpack --env.dev",
+    "dev": "node server --env=dev"
   },
   "repository": {
     "type": "git",
@@ -29,11 +34,14 @@
     "gulp-sass": "^3.1.0",
     "html-webpack-plugin": "^2.26.0",
     "node-sass": "^4.3.0",
-    "proxy-middleware": "^0.15.0",
     "react": "^15.4.2",
+    "rimraf": "^2.5.4",
     "sass-loader": "^4.1.1",
-    "url": "^0.11.0",
-    "webpack": "^1.14.0",
-    "webpack-dev-server": "^1.16.2"
+    "webpack": "2.0.0-beta",
+    "webpack-dev-middleware": "^1.9.0",
+    "webpack-dev-server": "^1.16.2",
+    "webpack-hot-middleware": "^2.15.0",
+    "webpack-validator": "^2.3.0",
+    "yargs": "^6.6.0"
   }
 }
