@@ -9,18 +9,17 @@ const { getIfUtils, removeEmpty } = require('webpack-config-utils')
 module.exports = env =>  {
   const {ifProd, ifNotProd} = getIfUtils(env)
   const extractCSS = new ExtractTextPlugin(ifProd('css/bundle.[name].[chunkhash].css', 'css/bundle.[name].css'))
-
-  const config = webpackValidator({
+  
+  let config = webpackValidator({
     context: resolve('src/app'),
     devtool: ifProd('source-map', 'eval'),
     target: 'web',
     entry: {
       app: [
-        './js/app.js',  
+        './js/app.js', 
       ],
-      vendor: ['./scss/app.scss', 'react']
-    }
-    ,
+      vendor: ['react']
+    },
     output: {
       filename: ifProd('js/bundle.[name].[chunkhash].js', 'js/bundle.[name].js'),
       path: resolve('dist'),
@@ -43,11 +42,11 @@ module.exports = env =>  {
     plugins: removeEmpty([
       new HtmlWebpackPlugin({
         template: './layouts/index.html',
-        inject: 'head'
+        inject: 'body'
       }),
       new webpack.optimize.UglifyJsPlugin({
         compress: {
-          warnings: false
+          warnings: false,
         },
         output: {
           comments: false
@@ -61,9 +60,20 @@ module.exports = env =>  {
       ),
       ifNotProd(
         new webpack.HotModuleReplacementPlugin()
-      )
+      ),
+      new webpack.DefinePlugin({
+        'process.env': {
+          NODE_ENV: ifProd(JSON.stringify('production'), JSON.stringify('development'))
+        }
+      })
     ])
   });
+
+  if(env.prod) {
+    config.entry.vendor.push('./scss/app.scss')
+  } else {
+    config.entry.app.push('./scss/app.scss')
+  }
 
   return config
 }
