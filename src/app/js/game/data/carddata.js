@@ -3,9 +3,9 @@ let generateCards = () => {
   let cardSuits = ['Heart', 'Club', 'Spade', 'Diamond']
   let getColor = (suit) => {
     if(suit === 'Heart' || suit === 'Diamond') {
-      return 'R'
+      return 'red'
     } else {
-      return 'B'
+      return 'black'
     }
   }
 
