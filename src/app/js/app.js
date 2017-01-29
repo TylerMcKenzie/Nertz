@@ -5,7 +5,7 @@ import Game from './game/game'
 class App extends React.Component {
 
   render() {
-    let numOfPlayers = 2
+    let numOfPlayers = 1
     
     return (
       <Game players={numOfPlayers}/>

@@ -1,26 +1,42 @@
 import React from 'react'
 import Card from './card'
 import CardData from './data/carddata'
+import MathUtils from '../utils/math-utils'
+var {shuffle} = MathUtils
 
-class Deck extends React.Component {
-  renderCards() {
-    let cardArr = CardData
-    let cards = []
+class Deck {
+  constructor(playerId) {
+    this.playerId = playerId
+    this.cards = this.generateCards(playerId)
+    this.savedCards = this.cards.slice(0)
+  }
+
+  selectCard(card) {
     
-    cardArr.map((card, i) => {
-      cards.push(<Card key={i} deckId={this.props.playerId} suit={card.suit} color={card.color} value={card.value} />)
+    let thisCard = this.savedCards.find((cardIn) => {
+      return cardIn.props.cardIndex === card.props.cardIndex
     })
 
-    return cards
+    if(thisCard) {
+      thisCard.props.isSelected = true
+    }
+
+    return thisCard
   }
 
-  render() {
-    return (
-      <div className="deck-container">
-        {this.renderCards()}
-      </div>
-    )
+  generateCards(deckId) {
+    let cardInfo = CardData
+    let cards = []
+
+    cardInfo.map((card, i) => {
+      cards.push(<Card key={i} cardIndex={i} deckId={deckId} suit={card.suit} color={card.color} value={card.value} select={this.selectCard.bind(this)} />)
+    })
+
+    let shuffledCards = shuffle(cards)
+    return shuffledCards
   }
+
+
 }
 
 export default Deck
