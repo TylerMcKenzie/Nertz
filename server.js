@@ -11,11 +11,11 @@ const webpackConfig = require('./webpack.config.babel.js')(env);
 const isDev = env !== 'prod';
 
 const HOSTNAME = 'localhost';
-const PORT = isDev ? 3000 : 3000;
+const PORT = isDev ? 3000 : 3001;
 
 
 // Start server logic
-var app = express();
+var server = express();
 
 if (isDev) {
   let devConfig = webpackConfig
@@ -31,21 +31,21 @@ if (isDev) {
 
   const middleware = webpackMiddleware(compiler, compilerOptions);
 
-  app.use(middleware);
-  app.use(webpackHotMiddleware(compiler));
+  server.use(middleware);
+  server.use(webpackHotMiddleware(compiler));
 
-  app.get('/*', (err, res, req) => {
+  server.get('/*', (err, res, req) => {
     res.write(middleware.fileSystem.readFileSync(join(__dirname, 'dist/index.html')));
     res.end();
   })
 
 } else {
 
-  app.use(express.static(join(__dirname, 'dist')));
-  app.get('/*', (err ,res, req) => {
+  server.use(express.static(join(__dirname, 'dist')));
+  server.get('/*', (err ,res, req) => {
     res.sendFile(join(__dirname, 'dist/index.html'));
   })
 
 }
 
-app.listen(PORT);
+server.listen(PORT);

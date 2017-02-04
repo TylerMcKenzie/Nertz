@@ -5,15 +5,13 @@ const webpackValidator = require('webpack-validator')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { getIfUtils, removeEmpty } = require('webpack-config-utils')
 
-
 module.exports = env =>  {
   const {ifProd, ifNotProd} = getIfUtils(env)
-  const extractCSS = new ExtractTextPlugin(ifProd('css/bundle.[name].[chunkhash].css', 'css/bundle.[name].css'))
+  const extractCSS = new ExtractTextPlugin(ifProd('css/bundle.[name].[hash].css', 'css/bundle.[name].css'))
   
   let config = webpackValidator({
     context: resolve('src/app'),
-    devtool: ifProd('source-map', 'eval'),
-    target: 'web',
+    devtool: ifProd('cheap-module-source-map', 'eval'),
     entry: {
       app: [
         './js/app.js', 
@@ -21,7 +19,7 @@ module.exports = env =>  {
       vendor: ['react']
     },
     output: {
-      filename: ifProd('js/bundle.[name].[chunkhash].js', 'js/bundle.[name].js'),
+      filename: ifProd('js/bundle.[name].[hash].js', 'js/bundle.[name].js'),
       path: resolve('dist'),
       publicPath: '/',
       pathinfo: ifNotProd(),
@@ -58,9 +56,7 @@ module.exports = env =>  {
           name: 'vendor'
         })
       ),
-      ifNotProd(
-        new webpack.HotModuleReplacementPlugin()
-      ),
+      new webpack.HotModuleReplacementPlugin(),
       new webpack.DefinePlugin({
         'process.env': {
           NODE_ENV: ifProd(JSON.stringify('production'), JSON.stringify('development'))

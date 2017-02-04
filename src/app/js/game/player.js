@@ -3,7 +3,7 @@ import Deck from './deck'
 
 class Player extends React.Component {
   constructor(props) {
-    super()
+    super(props)
     
     let startDeck = new Deck(props.id)
 
