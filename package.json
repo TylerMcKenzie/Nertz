@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run build && node server --env=prod",
     "prebuild": "rimraf dist",
-    "build": "webpack --env.prod ",
+    "build": "webpack -p --env.prod ",
     "prebuild:dev": "rimraf dist",
     "build:dev": "webpack --env.dev",
     "dev": "node server --env=dev"
@@ -26,22 +26,29 @@
     "babel-core": "^6.21.0",
     "babel-loader": "^6.2.10",
     "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "6.11.1",
     "css-loader": "^0.26.1",
-    "express": "^4.14.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-sass": "^3.1.0",
     "html-webpack-plugin": "^2.26.0",
     "node-sass": "^4.3.0",
-    "react": "^15.4.2",
     "rimraf": "^2.5.4",
     "sass-loader": "^4.1.1",
     "webpack": "2.0.0-beta",
+    "webpack-config-utils": "2.0.0",
     "webpack-dev-middleware": "^1.9.0",
     "webpack-dev-server": "^1.16.2",
     "webpack-hot-middleware": "^2.15.0",
     "webpack-validator": "^2.3.0",
     "yargs": "^6.6.0"
+  },
+  "dependencies": {
+    "express": "^4.14.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-redux": "^5.0.2",
+    "redux": "^3.6.0"
   }
 }
