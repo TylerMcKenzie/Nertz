@@ -1,5 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
+import store from './store/store'
 import Game from './game/game'
 
 class App extends React.Component {
@@ -8,7 +10,9 @@ class App extends React.Component {
     let numOfPlayers = 1
     
     return (
-      <Game players={numOfPlayers}/>
+      <Provider store={store}>
+        <Game players={numOfPlayers}/>
+      </Provider>
     )
   }
 }

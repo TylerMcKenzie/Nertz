@@ -1,8 +1,7 @@
 import React from 'react'
 import Card from './card'
 import CardData from './data/carddata'
-import MathUtils from '../utils/math-utils'
-var {shuffle} = MathUtils
+import { shuffle } from '../utils/math-utils'
 
 class Deck {
   constructor(playerId) {
