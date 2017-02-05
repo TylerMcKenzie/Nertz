@@ -1,12 +1,24 @@
 import { ADD_CARD_TO_GAME_DECK } from './actions'
 
 const DEFAULT_STATE = {
-  gameDeck: []
+  gameState: {
+    round: [],
+    playerScores: {},
+    gameDeck: []
+  },
+  playerState: {
+    deck: [],
+    hand: {
+      nertzPile: [],
+      playingCards: [],
+      deckDraw: []
+    }
+  }
 }
 
 const addCardToGameDeck = (state, action) => {
   const newState = {}
-  Object.assign(newState, state, {gameDeck: [action.card]})
+  Object.assign(newState, state, {gameState: { gameDeck: [action.card]}})
   return newState
 }
 

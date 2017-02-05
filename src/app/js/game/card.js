@@ -1,41 +1,35 @@
 import React from 'react'
 
-class Card extends React.Component {
-  constructor() {
-    super()
-    this.state = {
-      isSelected: false
-    }
+class Card {
+  constructor(deckId, cardData, cardIndex) {
+    this.deckId = deckId
+    this.suit = cardData.suit
+    this.color = cardData.color
+    this.value = cardData.value
+    this.index = cardIndex
+    this.handleClick = this.handleClick.bind(this)
   }
-
-  handleClick(event) {
-    let el = event.target.classList.contains('card') ? event.target : event.target.parentNode
-    console.log(this.props)
-    if(!this.props.isSelected) {
-      this.setState((prevState, props) => {
-        prevState.isSelected = true
-      })
-
-      this.props.select(this)
-    } else {
-      this.setState((prevState, props) => {
-        prevState.isSelected = false
-      })
-    }
+  handleClick (event) {
+    console.log(this)
   }
+  render () {
+    const Card = React.createClass({
+      render () {
+        return (
+          <div className='card' onClick={this.props.handleClick}>
+            <div className='suit'>
+              {this.props.suit}
+            </div>
+            <div className='value'>
+              {this.props.value}
+            </div>
+          </div>
+        )
+      }
+    })
 
-  render() {
-    return (
-      <div className={this.state.isSelected ? style.sel : style.notSel} onClick={this.handleClick.bind(this)}>
-        <div className={this.props.color}>{this.props.value} {this.props.suit}</div>
-      </div>
-    )
+    return <Card key={this.index} suit={this.suit} value={this.value} handleClick={this.handleClick}/>
   }
 }
-
-var style = {}
-
-style.sel = "card selected"
-style.notSel = "card"
 
 export default Card

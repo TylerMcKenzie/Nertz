@@ -1,4 +1,3 @@
-import React from 'react'
 import Card from './card'
 import CardData from './data/carddata'
 import { shuffle } from '../utils/math-utils'
@@ -7,18 +6,14 @@ class Deck {
   constructor(playerId) {
     this.playerId = playerId
     this.cards = this.generateCards(playerId)
-    this.savedCards = this.cards.slice(0)
+    this.shuffledCards = shuffle(this.cards)
+    this.selectCard = this.selectCard.bind(this)
   }
 
   selectCard(card) {
-    
-    let thisCard = this.savedCards.find((cardIn) => {
-      return cardIn.props.cardIndex === card.props.cardIndex
-    })
 
-    if(thisCard) {
-      thisCard.props.isSelected = true
-    }
+    let thisCard = this.cards.find((cardIn) => {
+    })
 
     return thisCard
   }
@@ -28,11 +23,10 @@ class Deck {
     let cards = []
 
     cardInfo.map((card, i) => {
-      cards.push(<Card key={i} cardIndex={i} deckId={deckId} suit={card.suit} color={card.color} value={card.value} select={this.selectCard.bind(this)} />)
+      cards.push(new Card(this.playerId, card, i))
     })
 
-    let shuffledCards = shuffle(cards)
-    return shuffledCards
+    return cards
   }
 
 
