@@ -1,4 +1,4 @@
-let generateCards = () => {
+let generateCardData = () => {
   let cardValues = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
   let cardSuits = ['Heart', 'Club', 'Spade', 'Diamond']
   let getColor = (suit) => {
@@ -20,6 +20,6 @@ let generateCards = () => {
   return arr
 }
 
-let cardArr = generateCards()
+let cardArr = generateCardData()
 
 export default cardArr

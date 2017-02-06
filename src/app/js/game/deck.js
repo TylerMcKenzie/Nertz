@@ -7,17 +7,17 @@ class Deck {
     this.playerId = playerId
     this.cards = this.generateCards(playerId)
     this.shuffledCards = shuffle(this.cards)
-    this.selectCard = this.selectCard.bind(this)
   }
-
   selectCard(card) {
+    console.log(this.cards)
 
-    let thisCard = this.cards.find((cardIn) => {
+    let selectedCard = this.cards.find((cardIn) => {
+      if (card.suit === cardIn.suit && card.value === cardIn.value) {
+        // console.log(cardIn)
+      }
     })
-
-    return thisCard
+    // return thisCard
   }
-
   generateCards(deckId) {
     let cardInfo = CardData
     let cards = []
@@ -28,8 +28,6 @@ class Deck {
 
     return cards
   }
-
-
 }
 
 export default Deck

@@ -7,16 +7,12 @@ class Card {
     this.color = cardData.color
     this.value = cardData.value
     this.index = cardIndex
-    this.handleClick = this.handleClick.bind(this)
-  }
-  handleClick (event) {
-    console.log(this)
   }
   render () {
     const Card = React.createClass({
       render () {
         return (
-          <div className='card' onClick={this.props.handleClick}>
+          <div className='card' data-suit={this.props.suit} data-value={this.props.value}>
             <div className='suit'>
               {this.props.suit}
             </div>
@@ -28,7 +24,7 @@ class Card {
       }
     })
 
-    return <Card key={this.index} suit={this.suit} value={this.value} handleClick={this.handleClick}/>
+    return <Card key={this.index} suit={this.suit} value={this.value} />
   }
 }
 
