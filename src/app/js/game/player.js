@@ -1,12 +1,11 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import Deck from './deck'
 
 class Player extends React.Component {
   constructor(props) {
     super(props)
     let startDeck = new Deck(props.id)
-
-    }
   }
   renderCardFlop (cardArr) {
     return cardArr.slice(cardArr.length - 3, cardArr.length).map((card) => card.render())
@@ -57,12 +56,26 @@ class Player extends React.Component {
       <div id={this.props.id} className="player">
         <div className="deck" onClick={this.handleCardClick}>
           <div className="deck-button" onClick={this.handleCardFlop}>DECK Button</div>
-          <div className="deck-draw">Flop: {this.renderCardFlop()}</div>
-          <div className="nertz-pile">Pile: {this.renderCardGroup()}</div>
-          <div className="playing-cards">Playing: {this.renderCardGroup(this.state.hand.playingCards)}</div>
+          <div className="deck-draw">Flop: </div>
+          <div className="nertz-pile">Pile: </div>
+          <div className="playing-cards">Playing: </div>
         </div>
       </div>
     )
+  }
+}
+
+const mapStateToProps = (state) => {
+  const playerState = state.playerState
+  return {
+    playerState: {
+      deck: playerState.deck,
+      hand: {
+        nertzPile: playerState.hand.nertzPile,
+        playingCards: playerState.hand.playingCards,
+        deckDraw: playerState.hand.deckDraw
+      }
+    }
   }
 }
 

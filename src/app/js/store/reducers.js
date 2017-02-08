@@ -18,7 +18,7 @@ const DEFAULT_STATE = {
 
 const addCardToGameDeck = (state, action) => {
   const newState = {}
-  Object.assign(newState, state, {gameState: { gameDeck: [action.card]}})
+  Object.assign(newState, state, {gameState: { gameDeck: state.gameState.gameDeck.push(action.card)}})
   return newState
 }
 

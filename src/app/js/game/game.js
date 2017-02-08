@@ -1,6 +1,5 @@
 import React from 'react'
-import Player from './player.js'
-
+import Player from './player'
 
 class Game extends React.Component {
   generatePlayers(n) {
@@ -17,9 +16,11 @@ class Game extends React.Component {
     let players = this.generatePlayers(1)
 
     return (
-      <div className="game">
-        <div className="board">BOARD</div>
-        {players}
+      <div className='game'>
+        <div className='board'>BOARD</div>
+        <div className='players'>
+          {players}
+        </div>
       </div>
     )
   }
