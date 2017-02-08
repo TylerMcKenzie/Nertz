@@ -46,7 +46,7 @@ class Player extends React.Component {
 
       } else if (parent.classList.contains('playing-cards')) {
         selectedCardIndex = this.state.hand.playingCards.findIndex(clickedCard)
-        // this.state.hand.playingCards.splice(selectedCardIndex, 1)
+        this.state.hand.playingCards.splice(selectedCardIndex, 1)
       }
 
     }
