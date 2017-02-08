@@ -1,4 +1,4 @@
-import { ADD_CARD_TO_GAME_DECK } from './actions'
+import { ADD_CARD_TO_GAME_DECK, SET_PLAYER_STATE } from './actions'
 
 const DEFAULT_STATE = {
   gameState: {
@@ -22,8 +22,15 @@ const addCardToGameDeck = (state, action) => {
   return newState
 }
 
+const setPlayerState = (state, action) => {
+  console.log(state)
+  console.log(action)
+}
+
 const rootReducer = (state = DEFAULT_STATE, action) => {
   switch (action.type) {
+    case SET_PLAYER_STATE:
+      return setPlayerState(state, action)
     case ADD_CARD_TO_GAME_DECK:
       return addCardToGameDeck(state, action)
     default:

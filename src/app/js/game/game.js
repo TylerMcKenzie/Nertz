@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import Player from './player'
 
 class Game extends React.Component {
@@ -26,4 +27,14 @@ class Game extends React.Component {
   }
 }
 
-export default Game
+const mapStateToProps = (state) => {
+  return {
+    gameState: {
+      round: state.gameState.round,
+      gameDeck: state.gameState.gameDeck,
+      playerScores: state.gameState.playerScores
+    }
+  }
+}
+
+export default connect(mapStateToProps)(Game)

@@ -1,11 +1,24 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { setPlayerState } from '../store/actionCreators'
 import Deck from './deck'
 
 class Player extends React.Component {
   constructor(props) {
     super(props)
     let startDeck = new Deck(props.id)
+
+    let initialProps = {
+      deck: startDeck.cards,
+      hand: {
+        nertzPile: startDeck.nertzPile,
+        playingCards: startDeck.playingCards,
+        deckDraw: []
+      }
+    }
+
+    // console.log(setPlayerState)
+    this.props.dispatchSetPlayerState(initialProps)
   }
   renderCardFlop (cardArr) {
     return cardArr.slice(cardArr.length - 3, cardArr.length).map((card) => card.render())
@@ -37,18 +50,18 @@ class Player extends React.Component {
       var selectedCardIndex
 
       if (parent.classList.contains('deck-draw')) {
-        selectedCardIndex = this.state.hand.deckDraw.findIndex(clickedCard)
+        selectedCardIndex = this.props.hand.deckDraw.findIndex(clickedCard)
 
         // el.remove()
       } else if (parent.classList.contains('nertz-pile')) {
-        selectedCardIndex = this.state.hand.nertzPile.findIndex(clickedCard)
+        selectedCardIndex = this.props.hand.nertzPile.findIndex(clickedCard)
         // this.state.hand.nertzPile.splice(selectedCardIndex, 1)
 
       } else if (parent.classList.contains('playing-cards')) {
-        selectedCardIndex = this.state.hand.playingCards.findIndex(clickedCard)
-        this.state.hand.playingCards.splice(selectedCardIndex, 1)
+        selectedCardIndex = this.props.hand.playingCards.findIndex(clickedCard)
+        this.props.hand.playingCards.splice(selectedCardIndex, 1)
       }
-
+      console.log(this)
     }
   }
   render() {
@@ -79,4 +92,12 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(Player)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    dispatchSetPlayerState (props) {
+      dispatch(setPlayerState(props))
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Player)

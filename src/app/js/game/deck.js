@@ -7,6 +7,8 @@ class Deck {
     this.playerId = playerId
     this.cards = this.generateCards(playerId)
     this.shuffledCards = shuffle(this.cards)
+    this.nertzPile = this.cards.splice(0, 13)
+    this.playingCards = this.cards.splice(0, 4)
   }
   selectCard(card) {
     console.log(this.cards)
