@@ -28,13 +28,7 @@ class Game extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  return {
-    gameState: {
-      round: state.gameState.round,
-      gameDeck: state.gameState.gameDeck,
-      playerScores: state.gameState.playerScores
-    }
-  }
+  return state.gameState
 }
 
 export default connect(mapStateToProps)(Game)

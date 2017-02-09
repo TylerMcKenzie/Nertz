@@ -11,14 +11,6 @@ class Deck {
     this.playingCards = this.cards.splice(0, 4)
   }
   selectCard(card) {
-    console.log(this.cards)
-
-    let selectedCard = this.cards.find((cardIn) => {
-      if (card.suit === cardIn.suit && card.value === cardIn.value) {
-        // console.log(cardIn)
-      }
-    })
-    // return thisCard
   }
   generateCards(deckId) {
     let cardInfo = CardData
