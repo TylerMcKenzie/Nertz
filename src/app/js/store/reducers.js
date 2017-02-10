@@ -10,7 +10,7 @@ const DEFAULT_STATE = {
     deck: [],
     hand: {
       nertzPile: [],
-      playingCards: [],
+      playingCards: [[],[],[],[]],
       deckDraw: []
     },
     selectedCard: {}

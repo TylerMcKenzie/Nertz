@@ -9,20 +9,13 @@ class Card {
     this.index = cardIndex
     this.isSelected = false
   }
-  select () {
-    return this.isSelected = true
-  }
   render () {
-    let className
-    if(this.isSelected) {
-      className = 'card selected'
-    } else {
-      className = 'card'
-    }
+    let className = this.isSelected ? 'card selected' : 'card'
+
     const Card = React.createClass({
       render () {
         return (
-          <div className={className} data-suit={this.props.suit} data-value={this.props.value}>
+          <div className={className} data-suit={this.props.suit} data-value={this.props.value} data-color={this.props.color}>
             <div className='suit'>
               {this.props.suit}
             </div>
@@ -34,7 +27,7 @@ class Card {
       }
     })
 
-    return <Card key={this.index} suit={this.suit} value={this.value} isSelected={this.isSelected}/>
+    return <Card key={this.index} suit={this.suit} value={this.value}  color={this.color} isSelected={this.isSelected}/>
   }
 }
 
