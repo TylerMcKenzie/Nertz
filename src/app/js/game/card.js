@@ -6,8 +6,19 @@ class Card {
     this.suit = cardData.suit
     this.color = cardData.color
     this.value = cardData.value
+    this.namedValue = cardData.namedValue
     this.index = cardIndex
     this.isSelected = false
+  }
+  canBePlayedInGame (selectedCard) {
+
+  }
+  canBePlayedOnPlayer (selectedCard) {
+    if(parseInt(this.value) === parseInt(selectedCard.value)-1 && this.color !== selectedCard.color) {
+      return true
+    } else {
+      return false
+    }
   }
   render () {
     let className = this.isSelected ? 'card selected' : 'card'
@@ -20,14 +31,14 @@ class Card {
               {this.props.suit}
             </div>
             <div className='value'>
-              {this.props.value}
+              {this.props.namedValue}
             </div>
           </div>
         )
       }
     })
 
-    return <Card key={this.index} suit={this.suit} value={this.value}  color={this.color} isSelected={this.isSelected}/>
+    return <Card key={this.index} suit={this.suit} value={this.value}  color={this.color} namedValue={this.namedValue} isSelected={this.isSelected}/>
   }
 }
 

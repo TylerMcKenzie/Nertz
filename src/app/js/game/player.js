@@ -24,6 +24,19 @@ class Player extends React.Component {
   renderCardFlop (cardArr) {
     return cardArr.slice(cardArr.length - 3, cardArr.length).map((card) => card.render())
   }
+  renderPlayingCards (cardArr) {
+    return Object.keys(cardArr).map((key) => {
+      return (
+        <ul key={key} className='pile'>
+          {cardArr[key].map((card, i) => {
+            return (
+              <li key={i} className='playing-card'>{card.render()}</li>
+            )
+          })}
+        </ul>
+      )
+    })
+  }
   renderCardGroup (cardArr) {
     if(Array.isArray(cardArr[0])) {
       return cardArr.map((subArr, i) => subArr.map((card, j) => {
@@ -65,19 +78,19 @@ class Player extends React.Component {
 
       if(!cardEl.classList.contains('selected')) {
         if(!this.props.selectedCard.isSelected) {
-
-
           let selectedCard
 
           if (parent.classList.contains('deck-draw')) {
             selectedCard = this.props.hand.deckDraw.find(clickedCard)
           } else if (parent.classList.contains('nertz-pile')) {
             selectedCard = this.props.hand.nertzPile.find(clickedCard)
-          } else if (parent.classList.contains('playing-cards')) {
-            this.props.hand.playingCards.map((cardArr) => {
-              if(cardArr.find(clickedCard)) {
-                selectedCard = cardArr.find(clickedCard)
-              }
+          } else if (parent.classList.contains('playing-card')) {
+            Object.keys(this.props.hand.playingCards).map((key) => {
+              this.props.hand.playingCards[key].map((cardIn) => {
+                if(card.suit === cardIn.suit && card.value === cardIn.value) {
+                  selectedCard = cardIn
+                }
+              })
             })
           }
 
@@ -89,20 +102,22 @@ class Player extends React.Component {
 
           this.props.dispatchSetSelectedCard(selectedCard)
         } else {
-          if (parent.classList.contains('playing-cards')) {
+          if (parent.classList.contains('playing-card')) {
             let cardToPlayOn
             const deckToPlayIn = 'playing-cards'
 
-            this.props.hand.playingCards.map((cardArr) => {
-              if(cardArr.find(clickedCard)) {
-                cardToPlayOn = cardArr.find(clickedCard)
-              }
+            Object.keys(this.props.hand.playingCards).map((key) => {
+              this.props.hand.playingCards[key].map((cardIn) => {
+                if(card.suit === cardIn.suit && card.value === cardIn.value) {
+                  cardToPlayOn = cardIn
+                }
+              })
             })
 
-            if(this.props.selectedCard.value < cardToPlayOn.value && this.props.selectedCard.color !== cardToPlayOn.color) {
-              console.log(this.props.selectedCard)
-              console.log(cardToPlayOn)
+            if(this.props.selectedCard.canBePlayedOnPlayer(cardToPlayOn)) {
+              console.log('Playable')
             }
+
           }
         }
       } else {
@@ -122,7 +137,7 @@ class Player extends React.Component {
           <div className="deck-button" onClick={this.handleCardFlop}>DECK Button</div>
           <div className="deck-draw">Flop: {this.renderCardFlop(this.props.hand.deckDraw)}</div>
           <div className="nertz-pile">Pile: {this.renderCardGroup(this.props.hand.nertzPile)}</div>
-          <div className="playing-cards">Playing: {this.renderCardGroup(this.props.hand.playingCards)}</div>
+          <div className="playing-cards">Playing: {this.renderPlayingCards(this.props.hand.playingCards)}</div>
         </div>
       </div>
     )
