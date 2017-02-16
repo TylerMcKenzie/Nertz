@@ -1,4 +1,4 @@
-import { ADD_CARD_TO_GAME_DECK, SET_INITIAL_PLAYER_STATE, SET_SELECTED_CARD, UN_SET_SELECTED_CARD } from './actions'
+import { ADD_CARD_TO_GAME_DECK, SET_INITIAL_PLAYER_STATE, SET_SELECTED_CARD, UN_SET_SELECTED_CARD, DRAW_CARDS, FLIP_DECK, PLAY_ON_HAND, PLAY_ON_GAME } from './actions'
 
 const DEFAULT_STATE = {
   gameState: {
@@ -73,6 +73,42 @@ const unSetSelectedCard = (state, action) => {
   return newState
 }
 
+const drawCards = (state, action) => {
+  const newPlayerHandState = {}
+  Object.assign(newPlayerHandState, state.playerState.hand, {
+    deckDraw: state.playerState.hand.deckDraw.concat(state.playerState.deck.splice(0, 3))
+  })
+  const newPlayerState = {}
+  Object.assign(newPlayerState, state.playerState, {
+    hand: newPlayerHandState
+  })
+  const newState = {}
+  Object.assign(newState, state, {
+    playerState: newPlayerState
+  })
+  return newState
+}
+
+const flipDeck = (state, action) => {
+  const newPlayerState = {}
+  Object.assign(newPlayerState, state.playerState, {
+    deck: state.playerState.hand.deckDraw.splice(0, state.playerState.hand.deckDraw.length)
+  })
+  const newState = {}
+  Object.assign(newState, state, {
+    playerState: newPlayerState
+  })
+  return newState
+}
+
+const playOnHand = (state, action) => {
+
+}
+
+const playOnGame = (state, action) => {
+
+}
+
 const rootReducer = (state = DEFAULT_STATE, action) => {
   switch (action.type) {
     case SET_INITIAL_PLAYER_STATE:
@@ -83,6 +119,14 @@ const rootReducer = (state = DEFAULT_STATE, action) => {
       return unSetSelectedCard(state, action)
     case ADD_CARD_TO_GAME_DECK:
       return addCardToGameDeck(state, action)
+    case DRAW_CARDS:
+      return drawCards(state, action)
+    case FLIP_DECK:
+      return flipDeck(state, action)
+    case PLAY_ON_HAND:
+      return playOnHand(state, action)
+    case PLAY_ON_GAME:
+      return playOnGame(state, action)
     default:
       return state
   }

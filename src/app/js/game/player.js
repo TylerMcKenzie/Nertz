@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { setInitialPlayerState, setSelectedCard, unSetSelectedCard } from '../store/actionCreators'
+import { setInitialPlayerState, setSelectedCard, unSetSelectedCard, drawCards, flipDeck } from '../store/actionCreators'
 import Deck from './deck'
 
 class Player extends React.Component {
@@ -10,7 +10,7 @@ class Player extends React.Component {
     let startDeck = new Deck(props.id)
 
     let initialProps = {
-      deck: startDeck.cards,
+      deck: startDeck.shuffledCards,
       hand: {
         nertzPile: startDeck.nertzPile,
         playingCards: startDeck.playingCards,
@@ -20,6 +20,7 @@ class Player extends React.Component {
 
     this.props.dispatchSetInitialPlayerState(initialProps)
     this.handleCardClick = this.handleCardClick.bind(this)
+    this.handleCardFlop = this.handleCardFlop.bind(this)
   }
   renderCardFlop (cardArr) {
     return cardArr.slice(cardArr.length - 3, cardArr.length).map((card) => card.render())
@@ -51,17 +52,16 @@ class Player extends React.Component {
       })
     }
   }
-  handleCardFlop(deck, event) {
-    if(deck.length > 0) {
-
+  handleCardFlop(event) {
+    if (this.props.deck.length > 0) {
+      this.props.dispatchDrawCards()
     } else {
-
+      this.props.dispatchFlipDeck()
     }
   }
   handleCardClick (event) {
     if (event.target.classList.contains('card')) {
       let cardEl = event.target
-
       let parent = cardEl.parentNode
 
       const card = {
@@ -81,7 +81,9 @@ class Player extends React.Component {
           let selectedCard
 
           if (parent.classList.contains('deck-draw')) {
-            selectedCard = this.props.hand.deckDraw.find(clickedCard)
+            if(cardEl === parent.childNodes[parent.childNodes.length-1]) {
+              selectedCard = this.props.hand.deckDraw.find(clickedCard)
+            }
           } else if (parent.classList.contains('nertz-pile')) {
             selectedCard = this.props.hand.nertzPile.find(clickedCard)
           } else if (parent.classList.contains('playing-card')) {
@@ -94,30 +96,32 @@ class Player extends React.Component {
             })
           }
 
-          selectedCard.isSelected = true
+          if (selectedCard) {
+            selectedCard.isSelected = true
 
-          if(this.props.selectedCard) {
-            this.props.selectedCard.isSelected = false
+            if(this.props.selectedCard) {
+              this.props.selectedCard.isSelected = false
+            }
+
+            this.props.dispatchSetSelectedCard(selectedCard)
           }
-
-          this.props.dispatchSetSelectedCard(selectedCard)
         } else {
           if (parent.classList.contains('playing-card')) {
-            let cardToPlayOn
-            const deckToPlayIn = 'playing-cards'
+            let cardToPlayOn, pileToPlayIn
 
             Object.keys(this.props.hand.playingCards).map((key) => {
               this.props.hand.playingCards[key].map((cardIn) => {
                 if(card.suit === cardIn.suit && card.value === cardIn.value) {
                   cardToPlayOn = cardIn
+                  pileToPlayIn = key
                 }
               })
             })
-
+            console.log(pileToPlayIn)
             if(this.props.selectedCard.canBePlayedOnPlayer(cardToPlayOn)) {
               console.log('Playable')
-            }
 
+            }
           }
         }
       } else {
@@ -158,6 +162,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     dispatchUnSetSelectedCard () {
       dispatch(unSetSelectedCard())
+    },
+    dispatchDrawCards () {
+      dispatch(drawCards())
+    },
+    dispatchFlipDeck () {
+      dispatch(flipDeck())
     }
   }
 }
