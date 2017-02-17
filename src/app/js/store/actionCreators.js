@@ -20,11 +20,11 @@ export function drawCards () {
   return { type: DRAW_CARDS }
 }
 
-export function playerMoveOnHand (card, destKey) {
+export function playOnHand (card, destKey) {
   return { type: PLAY_ON_HAND, card, destKey }
 }
 
-export function playerMoveOnGame (card) {
+export function playOnGame (card) {
   return { type: PLAY_ON_GAME, card }
 }
 

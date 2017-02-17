@@ -1,4 +1,5 @@
 import { ADD_CARD_TO_GAME_DECK, SET_INITIAL_PLAYER_STATE, SET_SELECTED_CARD, UN_SET_SELECTED_CARD, DRAW_CARDS, FLIP_DECK, PLAY_ON_HAND, PLAY_ON_GAME } from './actions'
+import { addItem, addItems, removeItem, removeItems } from '../utils/immutables'
 
 const DEFAULT_STATE = {
   gameState: {
@@ -76,10 +77,12 @@ const unSetSelectedCard = (state, action) => {
 const drawCards = (state, action) => {
   const newPlayerHandState = {}
   Object.assign(newPlayerHandState, state.playerState.hand, {
-    deckDraw: state.playerState.hand.deckDraw.concat(state.playerState.deck.splice(0, 3))
+    deckDraw: addItems(state.playerState.hand.deckDraw,
+      state.playerState.deck.slice(state.playerState.deck.length-3, state.playerState.deck.length))
   })
   const newPlayerState = {}
   Object.assign(newPlayerState, state.playerState, {
+    deck: removeItems(state.playerState.deck, state.playerState.deck.length-3, state.playerState.deck.length),
     hand: newPlayerHandState
   })
   const newState = {}
@@ -90,9 +93,14 @@ const drawCards = (state, action) => {
 }
 
 const flipDeck = (state, action) => {
+  const newPlayerHandState = {}
+  Object.assign(newPlayerHandState, state.playerState.hand, {
+    deckDraw: []
+  })
   const newPlayerState = {}
   Object.assign(newPlayerState, state.playerState, {
-    deck: state.playerState.hand.deckDraw.splice(0, state.playerState.hand.deckDraw.length)
+    deck: [...state.playerState.hand.deckDraw],
+    hand: newPlayerHandState
   })
   const newState = {}
   Object.assign(newState, state, {
@@ -102,7 +110,8 @@ const flipDeck = (state, action) => {
 }
 
 const playOnHand = (state, action) => {
-
+  
+  return state
 }
 
 const playOnGame = (state, action) => {

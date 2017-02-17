@@ -1,12 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { setInitialPlayerState, setSelectedCard, unSetSelectedCard, drawCards, flipDeck } from '../store/actionCreators'
+import { setInitialPlayerState, setSelectedCard, unSetSelectedCard, drawCards, flipDeck, playOnHand } from '../store/actionCreators'
 import Deck from './deck'
 
 class Player extends React.Component {
   constructor(props) {
     super(props)
-    // Initialize playerState on construct
     let startDeck = new Deck(props.id)
 
     let initialProps = {
@@ -23,33 +22,36 @@ class Player extends React.Component {
     this.handleCardFlop = this.handleCardFlop.bind(this)
   }
   renderCardFlop (cardArr) {
-    return cardArr.slice(cardArr.length - 3, cardArr.length).map((card) => card.render())
+    if(cardArr.length > 0) {
+      return cardArr.slice(cardArr.length - 3, cardArr.length).map((card) => card.render())
+    } else {
+      return (
+        <div className="card empty">EMPTY</div>
+      )
+    }
   }
   renderPlayingCards (cardArr) {
     return Object.keys(cardArr).map((key) => {
-      return (
-        <ul key={key} className='pile'>
-          {cardArr[key].map((card, i) => {
-            return (
-              <li key={i} className='playing-card'>{card.render()}</li>
-            )
-          })}
-        </ul>
-      )
-    })
+      return (<ul key={key} className='pile'>{ cardArr[key].length !== 0 ? cardArr[key].map((card, i) => { return (<li key={i} className='playing-card'>{card.render()}</li>)}) : <div className="card empty">EMPTY</div>}</ul>)})
   }
-  renderCardGroup (cardArr) {
-    if(Array.isArray(cardArr[0])) {
-      return cardArr.map((subArr, i) => subArr.map((card, j) => {
-        if(j === 0) {
-          return card.render()
-        }}))
+  renderNertzPile (cardArr) {
+    if(cardArr.length !== 0) {
+      if(Array.isArray(cardArr[0])) {
+        return cardArr.map((subArr, i) => subArr.map((card, j) => {
+          if(j === 0) {
+            return card.render()
+          }}))
+      } else {
+        return cardArr.map((card,i, arr) => {
+          if(i === arr.length-1) {
+            return card.render()
+          }
+        })
+      }
     } else {
-      return cardArr.map((card,i, arr) => {
-        if(i===arr.length-1) {
-          return card.render()
-        }
-      })
+      return (
+        <div className="card empty">EMPTY</div>
+      )
     }
   }
   handleCardFlop(event) {
@@ -117,15 +119,14 @@ class Player extends React.Component {
                 }
               })
             })
-            console.log(pileToPlayIn)
+
             if(this.props.selectedCard.canBePlayedOnPlayer(cardToPlayOn)) {
               console.log('Playable')
-
+              this.props.dispatchPlayOnHand(cardToPlayOn, pileToPlayIn)
             }
           }
         }
       } else {
-
         if(this.props.selectedCard) {
           this.props.selectedCard.isSelected = false
         }
@@ -140,7 +141,7 @@ class Player extends React.Component {
         <div className="deck" onClick={this.handleCardClick}>
           <div className="deck-button" onClick={this.handleCardFlop}>DECK Button</div>
           <div className="deck-draw">Flop: {this.renderCardFlop(this.props.hand.deckDraw)}</div>
-          <div className="nertz-pile">Pile: {this.renderCardGroup(this.props.hand.nertzPile)}</div>
+          <div className="nertz-pile">Pile: {this.renderNertzPile(this.props.hand.nertzPile)}</div>
           <div className="playing-cards">Playing: {this.renderPlayingCards(this.props.hand.playingCards)}</div>
         </div>
       </div>
@@ -168,6 +169,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     dispatchFlipDeck () {
       dispatch(flipDeck())
+    },
+    dispatchPlayOnHand (card, dest) {
+      dispatch(playOnHand(card, dest))
     }
   }
 }
