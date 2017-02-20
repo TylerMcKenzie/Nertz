@@ -1,5 +1,5 @@
 let generateCardData = () => {
-  let cardValues = ['0', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13']
+  let cardValues = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13']
   let cardSuits = ['Heart', 'Club', 'Spade', 'Diamond']
   let getColor = (suit) => {
     if(suit === 'Heart' || suit === 'Diamond') {
@@ -10,7 +10,7 @@ let generateCardData = () => {
   }
   let getNamedValue = (value) => {
     switch(value) {
-      case '0':
+      case '1':
         return 'A'
       case '11':
         return 'J'

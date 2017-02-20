@@ -1,4 +1,4 @@
-import { ADD_CARD_TO_GAME_DECK, SET_INITIAL_PLAYER_STATE, SET_SELECTED_CARD, UN_SET_SELECTED_CARD, DRAW_CARDS, FLIP_DECK, PLAY_ON_HAND, PLAY_ON_GAME } from './actions'
+import { SET_INITIAL_PLAYER_STATE, SET_SELECTED_CARD, UN_SET_SELECTED_CARD, DRAW_CARDS, FLIP_DECK, PLAY_ON_HAND, PLAY_ON_GAME } from './actions'
 import { addItem, addItems, removeItem, removeItems } from '../utils/immutables'
 
 const DEFAULT_STATE = {
@@ -19,18 +19,8 @@ const DEFAULT_STATE = {
       },
       deckDraw: []
     },
-    selectedCard: {}
-  }
-}
-
-const addCardToGameDeck = (state, action) => {
-  const newState = {}
-  Object.assign(newState, state, {
-    gameState: {
-      gameDeck: state.gameState.gameDeck.push(action.card)
-    }
-  })
-  return newState
+  },
+  selectedCard: {}
 }
 
 const setInitialPlayerState = (state, action) => {
@@ -51,25 +41,18 @@ const setInitialPlayerState = (state, action) => {
 }
 
 const setSelectedCard = (state, action) => {
-  const newPlayerState = {}
-  Object.assign(newPlayerState, state.playerState, {
-    selectedCard: action.card
-  })
   const newState = {}
   Object.assign(newState, state, {
-    playerState: newPlayerState
+    selectedCard: action.card
   })
   return newState
 }
 
 const unSetSelectedCard = (state, action) => {
-  const newPlayerState = {}
-  Object.assign(newPlayerState, state.playerState, {
-    selectedCard: {}
-  })
   const newState = {}
+  state.selectedCard.isSelected = false
   Object.assign(newState, state, {
-    playerState: newPlayerState
+    selectedCard: {}
   })
   return newState
 }
@@ -110,12 +93,42 @@ const flipDeck = (state, action) => {
 }
 
 const playOnHand = (state, action) => {
-  
-  return state
+  let patt = new RegExp('pile')
+  let newPlayerHandPlayingCardsState = {}
+  let newPlayerHandState = {}
+
+  if(patt.test(action.cardLocation.pile)) {
+    Object.assign(newPlayerHandPlayingCardsState, state.playerState.hand.playingCards, {
+      [action.cardDest.pile]: addItem(state.playerState.hand.playingCards[action.cardDest.pile], action.cardToPlay),
+      [action.cardLocation.pile]:  removeItem(state.playerState.hand.playingCards[action.cardLocation.pile], action.cardLocation.cardIndex)
+    })
+    Object.assign(newPlayerHandState, state.playerState.hand, {
+      playingCards: newPlayerHandPlayingCardsState
+    })
+  } else {
+    Object.assign(newPlayerHandPlayingCardsState, state.playerState.hand.playingCards, {
+      [action.cardDest.pile]: addItem(state.playerState.hand.playingCards[action.cardDest.pile], action.cardToPlay)
+    })
+    Object.assign(newPlayerHandState, state.playerState.hand, {
+      [action.cardLocation.pile]: removeItem(state.playerState.hand[action.cardLocation.pile], action.cardLocation.cardIndex),
+      playingCards: newPlayerHandPlayingCardsState
+    })
+  }
+
+  let newPlayerState = {}
+  Object.assign(newPlayerState, state.playerState, {
+    hand: newPlayerHandState
+  })
+  let newState = {}
+  Object.assign(newState, state, {
+    playerState: newPlayerState
+  })
+  return newState
 }
 
 const playOnGame = (state, action) => {
-
+  console.log(action)
+  return state
 }
 
 const rootReducer = (state = DEFAULT_STATE, action) => {
@@ -126,8 +139,6 @@ const rootReducer = (state = DEFAULT_STATE, action) => {
       return setSelectedCard(state, action)
     case UN_SET_SELECTED_CARD:
       return unSetSelectedCard(state, action)
-    case ADD_CARD_TO_GAME_DECK:
-      return addCardToGameDeck(state, action)
     case DRAW_CARDS:
       return drawCards(state, action)
     case FLIP_DECK:

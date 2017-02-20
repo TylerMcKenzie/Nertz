@@ -1,6 +1,6 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import Player from './player'
+import Board from './board'
 
 class Game extends React.Component {
   generatePlayers(n) {
@@ -18,7 +18,9 @@ class Game extends React.Component {
 
     return (
       <div className='game'>
-        <div className='board'>BOARD</div>
+        <div className='board'>
+          <Board />
+        </div>
         <div className='players'>
           {players}
         </div>
@@ -27,8 +29,4 @@ class Game extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return state.gameState
-}
-
-export default connect(mapStateToProps)(Game)
+export default Game

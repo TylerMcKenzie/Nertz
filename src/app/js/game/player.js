@@ -32,7 +32,7 @@ class Player extends React.Component {
   }
   renderPlayingCards (cardArr) {
     return Object.keys(cardArr).map((key) => {
-      return (<ul key={key} className='pile'>{ cardArr[key].length !== 0 ? cardArr[key].map((card, i) => { return (<li key={i} className='playing-card'>{card.render()}</li>)}) : <div className="card empty">EMPTY</div>}</ul>)})
+      return (<ul key={key} data-pile={key} className='pile'>{ cardArr[key].length !== 0 ? cardArr[key].map((card, i) => { return (<li key={i} className='playing-card'>{card.render()}</li>)}) : <div className="card empty">EMPTY</div>}</ul>)})
   }
   renderNertzPile (cardArr) {
     if(cardArr.length !== 0) {
@@ -72,9 +72,11 @@ class Player extends React.Component {
         color: cardEl.getAttribute('data-color')
       }
 
-      let clickedCard = (cardIn) => {
+      let clickedCard = (cardIn, i) => {
         if (card.suit === cardIn.suit && card.value === cardIn.value) {
-          return cardIn
+          let foundCard = cardIn
+          foundCard.cardIndex = i
+          return foundCard
         }
       }
 
@@ -85,16 +87,17 @@ class Player extends React.Component {
           if (parent.classList.contains('deck-draw')) {
             if(cardEl === parent.childNodes[parent.childNodes.length-1]) {
               selectedCard = this.props.hand.deckDraw.find(clickedCard)
+              selectedCard.pile = 'deckDraw'
             }
           } else if (parent.classList.contains('nertz-pile')) {
             selectedCard = this.props.hand.nertzPile.find(clickedCard)
+            selectedCard.pile = 'nertzPile'
           } else if (parent.classList.contains('playing-card')) {
             Object.keys(this.props.hand.playingCards).map((key) => {
-              this.props.hand.playingCards[key].map((cardIn) => {
-                if(card.suit === cardIn.suit && card.value === cardIn.value) {
-                  selectedCard = cardIn
-                }
-              })
+              if (this.props.hand.playingCards[key].find(clickedCard)) {
+                selectedCard = this.props.hand.playingCards[key].find(clickedCard)
+                selectedCard.pile = key
+              }
             })
           }
 
@@ -104,25 +107,36 @@ class Player extends React.Component {
             if(this.props.selectedCard) {
               this.props.selectedCard.isSelected = false
             }
-
+            console.log(selectedCard)
             this.props.dispatchSetSelectedCard(selectedCard)
           }
+        } else if(cardEl.classList.contains('empty') && parent.classList.contains('pile')) {
+          let cardLocation = { cardIndex: this.props.selectedCard.cardIndex, pile: this.props.selectedCard.pile }
+          let cardDest = { pile: parent.getAttribute('data-pile'), cardIndex: 0 }
+          this.props.dispatchPlayOnHand(cardLocation, cardDest, this.props.selectedCard)
+          this.props.selectedCard.isSelected = false
+          this.props.dispatchUnSetSelectedCard()
         } else {
           if (parent.classList.contains('playing-card')) {
-            let cardToPlayOn, pileToPlayIn
+            let cardToPlayOn,
+                cardDest = {},
+                cardLocation = { cardIndex: this.props.selectedCard.cardIndex, pile: this.props.selectedCard.pile }
 
             Object.keys(this.props.hand.playingCards).map((key) => {
-              this.props.hand.playingCards[key].map((cardIn) => {
+              this.props.hand.playingCards[key].map((cardIn, i) => {
                 if(card.suit === cardIn.suit && card.value === cardIn.value) {
                   cardToPlayOn = cardIn
-                  pileToPlayIn = key
+                  cardDest = { cardIndex: i, pile: key }
                 }
               })
             })
 
-            if(this.props.selectedCard.canBePlayedOnPlayer(cardToPlayOn)) {
-              console.log('Playable')
-              this.props.dispatchPlayOnHand(cardToPlayOn, pileToPlayIn)
+            if(cardLocation.pile !== cardDest.pile) {
+              if(this.props.selectedCard.canBePlayedOnPlayer(cardToPlayOn)) {
+                this.props.dispatchPlayOnHand(cardLocation, cardDest, this.props.selectedCard)
+                this.props.selectedCard.isSelected = false
+                this.props.dispatchUnSetSelectedCard()
+              }
             }
           }
         }
@@ -150,7 +164,10 @@ class Player extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  return state.playerState
+  let playerState = Object.assign({}, state.playerState)
+  // This is normally bad practice but in this instance I need these values to be the same here and on the Board
+  playerState.selectedCard = state.selectedCard
+  return playerState
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -170,8 +187,8 @@ const mapDispatchToProps = (dispatch) => {
     dispatchFlipDeck () {
       dispatch(flipDeck())
     },
-    dispatchPlayOnHand (card, dest) {
-      dispatch(playOnHand(card, dest))
+    dispatchPlayOnHand (cardLocation, cardDest, cardToPlay) {
+      dispatch(playOnHand(cardLocation, cardDest, cardToPlay))
     }
   }
 }
