@@ -107,7 +107,7 @@ class Player extends React.Component {
             if(this.props.selectedCard) {
               this.props.selectedCard.isSelected = false
             }
-            console.log(selectedCard)
+
             this.props.dispatchSetSelectedCard(selectedCard)
           }
         } else if(cardEl.classList.contains('empty') && parent.classList.contains('pile')) {

@@ -127,8 +127,44 @@ const playOnHand = (state, action) => {
 }
 
 const playOnGame = (state, action) => {
+  let patt = new RegExp('pile')
+  let newGameState = {}
+  let newPlayerState = {}
+
+  if(action.cardDest === 'new') {
+    Object.assign(newGameState, state.gameState, {
+      gameDeck: addItem(state.gameState.gameDeck, { id: state.gameState.gameDeck.length+1, pile: [action.cardToPlay] })
+    })
+
+    let newPlayerHandState = {}
+    if(patt.test(action.cardLocation.pile)) {
+      let newPlayerHandPlayingCardsState = {}
+      Object.assign(newPlayerHandPlayingCardsState, state.playerState.hand.playingCards, {
+        [action.cardLocation.pile]: removeItem(state.playerState.hand.playingCards[action.cardLocation.pile], action.cardLocation.cardIndex)
+      })
+      Object.assign(newPlayerHandState, state.playerState.hand, {
+        playingCards: newPlayerHandPlayingCardsState
+      })
+    } else {
+      Object.assign(newPlayerHandState, state.playerState.hand, {
+        [action.cardLocation.pile]: removeItem(state.playerState.hand[action.cardLocation.pile], action.cardLocation.cardIndex),
+      })
+    }
+    Object.assign(newPlayerState, state.playerState, {
+      hand: newPlayerHandState
+    })
+
+  } else {
+
+  }
+
+  let newState = {}
+  Object.assign(newState, state, {
+    gameState: newGameState,
+    playerState: newPlayerState
+  })
   console.log(action)
-  return state
+  return newState
 }
 
 const rootReducer = (state = DEFAULT_STATE, action) => {

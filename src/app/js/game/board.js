@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { playOnGame } from '../store/actionCreators'
+import { playOnGame, unSetSelectedCard } from '../store/actionCreators'
 
 class Board extends React.Component {
   constructor (props) {
@@ -11,21 +11,24 @@ class Board extends React.Component {
   handleClick (event) {
     console.log(event.target)
     let pileEl = event.target
-    if(pileEl.classList.contains('empty')) {
-      console.log(this.props)
+    if(this.props.selectedCard.namedValue === 'A') {
+      let cardLocation = { cardIndex: this.props.selectedCard.index, pile: this.props.selectedCard.pile }
+      let cardDest = 'new'
+      this.props.dispatchPlayOnGame(cardLocation, cardDest, this.props.selectedCard)
+      this.props.dispatchUnSetSelectedCard()
     } else {
 
     }
+    console.log(this.props)
   }
 
   renderGameDeck (gameDeckArr) {
-    console.log(gameDeckArr)
     if(gameDeckArr.length === 0) {
       return <div className='game-pile empty'></div>
     } else {
-      gameDeckArr.map((pile) => {
+      return gameDeckArr.map((pile) => {
         return <div className='game-pile'>
-          {pile.map((cardInPile) => cardInPile.render())}
+          {pile.pile.map((cardInPile) => cardInPile.render())}
         </div>
       })
     }
@@ -52,6 +55,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatchPlayOnGame (cardLocation, cardDest, cardToPlay) {
       dispatch(playOnGame(cardLocation, cardDest, cardToPlay))
+    },
+    dispatchUnSetSelectedCard () {
+      dispatch(unSetSelectedCard())
     }
   }
 }

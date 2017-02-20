@@ -10,8 +10,10 @@ class Card {
     this.index = cardIndex
     this.isSelected = false
   }
-  canBePlayedInGame (selectedCard) {
-
+  canBePlayedOnGame (selectedCard) {
+    if(selectedCard.suit === this.suit && parseInt(selectedCard.value)-1 === parseInt(this.value)) {
+      return true
+    }
   }
   canBePlayedOnPlayer (selectedCard) {
     if(parseInt(this.value) === parseInt(selectedCard.value)-1 && this.color !== selectedCard.color) {
