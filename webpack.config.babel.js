@@ -8,13 +8,13 @@ const { getIfUtils, removeEmpty } = require('webpack-config-utils')
 module.exports = env =>  {
   const {ifProd, ifNotProd} = getIfUtils(env)
   const extractCSS = new ExtractTextPlugin(ifProd('css/bundle.[name].[hash].css', 'css/bundle.[name].css'))
-  
+
   let config = webpackValidator({
     context: resolve('src/app'),
     devtool: ifProd('cheap-module-source-map', 'eval'),
     entry: {
       app: [
-        './js/app.js', 
+        './js/app.js'
       ],
       vendor: ['react']
     },

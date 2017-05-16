@@ -1,44 +1,32 @@
 import React from 'react'
-import Player from './player.js'
-
+import Player from './player'
+import Board from './board'
 
 class Game extends React.Component {
-  constructor(props) {
-    super()
-    this.state = {
-      players: this.generatePlayers(props.players),
-      gameDeck: []
-    }
-
-  }
-
-  addToGameDeck(card) {
-    this.setState((prevState, props) => {
-      prevState.gameDeck.push(card)
-      console.log(prevState)
-    })
-  }
-
   generatePlayers(n) {
     let arr = []
 
     for(let i = 1; i < n+1; i++) {
-      arr.push(<Player key={i} id={i} playCard={this.addToGameDeck.bind(this)} />)
+      arr.push(<Player key={i} id={i} />)
     }
 
     return arr
   }
 
   render() {
-    let players = this.state.players
+    let players = this.generatePlayers(1)
 
     return (
-      <div className="game">
-        <div className="board">BOARD</div>
-        {players}
+      <div className='game'>
+        <div className='board'>
+          <Board />
+        </div>
+        <div className='players'>
+          {players}
+        </div>
       </div>
     )
-  } 
+  }
 }
 
 export default Game

@@ -21,3 +21,19 @@
 .selected {
   background-color: limegreen;
 }
+
+.pile {
+  display: inline-block;
+}
+
+.game-pile {
+  width: 150px;
+  height: 150px;
+  display: inline-flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  &.empty {
+    background-color: yellow;
+  }
+}

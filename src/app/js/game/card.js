@@ -1,41 +1,47 @@
 import React from 'react'
 
-class Card extends React.Component {
-  constructor() {
-    super()
-    this.state = {
-      isSelected: false
+class Card {
+  constructor(deckId, cardData, cardIndex) {
+    this.deckId = deckId
+    this.suit = cardData.suit
+    this.color = cardData.color
+    this.value = cardData.value
+    this.namedValue = cardData.namedValue
+    this.index = cardIndex
+    this.isSelected = false
+  }
+  canBePlayedOnGame (selectedCard) {
+    if(selectedCard.suit === this.suit && parseInt(selectedCard.value)-1 === parseInt(this.value)) {
+      return true
     }
   }
-
-  handleClick(event) {
-    let el = event.target.classList.contains('card') ? event.target : event.target.parentNode
-    console.log(this.props)
-    if(!this.props.isSelected) {
-      this.setState((prevState, props) => {
-        prevState.isSelected = true
-      })
-
-      this.props.select(this)
+  canBePlayedOnPlayer (selectedCard) {
+    if(parseInt(this.value) === parseInt(selectedCard.value)-1 && this.color !== selectedCard.color) {
+      return true
     } else {
-      this.setState((prevState, props) => {
-        prevState.isSelected = false
-      })
+      return false
     }
   }
+  render () {
+    let className = this.isSelected ? 'card selected' : 'card'
 
-  render() {
-    return (
-      <div className={this.state.isSelected ? style.sel : style.notSel} onClick={this.handleClick.bind(this)}>
-        <div className={this.props.color}>{this.props.value} {this.props.suit}</div>
-      </div>
-    )
+    const Card = React.createClass({
+      render () {
+        return (
+          <div className={className} data-suit={this.props.suit} data-value={this.props.value} data-color={this.props.color}>
+            <div className='suit'>
+              {this.props.suit}
+            </div>
+            <div className='value'>
+              {this.props.namedValue}
+            </div>
+          </div>
+        )
+      }
+    })
+
+    return <Card key={this.index} suit={this.suit} value={this.value}  color={this.color} namedValue={this.namedValue} isSelected={this.isSelected}/>
   }
 }
-
-var style = {}
-
-style.sel = "card selected"
-style.notSel = "card"
 
 export default Card
